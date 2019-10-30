@@ -14,10 +14,34 @@ final TextEditingController _ageController = new TextEditingController();
 final TextEditingController _heightController = new TextEditingController();
 final TextEditingController _weightController = new TextEditingController();
 double _bmi = 0.0;
+double inchase = 0.0;
+String weightInfo = "";
 
 void handleController(){
   setState(() {
-    _bmi = calculate(_heightController.text , _weightController.text);
+     int age = int.parse(_ageController.text);
+     double height = double.parse(_heightController.text);
+     double weight = double.parse(_weightController.text);
+     inchase = 12 * height;
+
+     if((age>0 || _ageController.text.isNotEmpty)
+          && (inchase > 0 || _heightController.text.isNotEmpty)
+              && (weight >0 || _weightController.text.isNotEmpty)){
+       _bmi = calculate(_heightController.text , _weightController.text);
+
+       double x = double.parse(_bmi.toStringAsFixed(1));
+
+        if(double.parse(_bmi.toStringAsFixed(1)) < 18.5){
+          weightInfo = "Under Weight";
+        }else if( x > 18.5 && x < 25){
+         weightInfo = "Normal";
+        } else if( x > 24.5 && x < 30){
+          weightInfo = "Over Weight";
+        }else{
+          weightInfo = "Above";
+        }
+     }
+
   });
 }
 
@@ -78,7 +102,7 @@ void handleController(){
                   new Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
-                      new FlatButton(
+                      new RaisedButton(
                           onPressed: handleController,
                           color: Colors.pink,
                           child: new Text("Calculate")),
@@ -92,11 +116,19 @@ void handleController(){
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
                   new Text(
-                    "Your BIM is $_bmi",
+                    "BMI : $_bmi",
                     style: new TextStyle(
                       color: Colors.blue,
                       fontWeight: FontWeight.w800,
                       fontSize: 20
+                    ),
+                  ),
+                  new Text(
+                    "$weightInfo",
+                    style: new TextStyle(
+                        color: Colors.red,
+                        fontWeight: FontWeight.w500,
+                        fontSize: 20
                     ),
                   )
                 ],
@@ -109,6 +141,6 @@ void handleController(){
   }
 
   double calculate(String height , String weight) {
-    return double.parse(weight)/(double.parse(height) * double.parse(height));
+    return double.parse(weight)/(double.parse(height) * double.parse(height))*703;
   }
 }
